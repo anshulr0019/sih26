@@ -1,0 +1,330 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-base);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  height: 100%;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+p {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: var(--navy);
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* ---------- App frame ---------- */
+
+.app {
+  display: grid;
+  grid-template-rows: var(--topbar-h) 1fr;
+  grid-template-columns: var(--nav-w) 1fr;
+  grid-template-areas:
+    "topbar topbar"
+    "nav    main";
+  height: 100%;
+}
+
+/* ---------- Top bar ---------- */
+
+.topbar {
+  grid-area: topbar;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: 0 var(--sp-5);
+  background: var(--navy);
+  color: var(--text-invert);
+  border-bottom: 1px solid var(--navy-dark);
+}
+
+.topbar__identity {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.topbar__brand {
+  min-width: 0;
+}
+
+.topbar__name {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.topbar__tagline {
+  font-size: var(--fs-xs);
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topbar__rule {
+  width: 1px;
+  height: 26px;
+  flex: none;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.topbar__org {
+  font-size: var(--fs-sm);
+  color: rgba(255, 255, 255, 0.62);
+  white-space: nowrap;
+}
+
+.topbar__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  flex: none;
+  font-size: var(--fs-sm);
+  color: rgba(255, 255, 255, 0.78);
+  white-space: nowrap;
+}
+
+.topbar__operator {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.topbar__operator-label {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ---------- Left nav ---------- */
+
+.nav {
+  grid-area: nav;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+}
+
+.nav__section {
+  padding: var(--sp-4) var(--sp-4) var(--sp-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.nav__list {
+  flex: 1;
+}
+
+.nav__link {
+  display: block;
+  padding: 7px var(--sp-4);
+  border-left: 3px solid transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: background-color 90ms linear;
+}
+
+.nav__link:hover {
+  background: var(--surface-alt);
+  color: var(--text);
+}
+
+.nav__link--active {
+  border-left-color: var(--navy);
+  background: var(--navy-tint);
+  color: var(--navy);
+  font-weight: 500;
+}
+
+.nav__link--active:hover {
+  background: var(--navy-tint);
+}
+
+.nav__link-count[hidden] {
+  display: none;
+}
+
+.nav__link-count {
+  float: right;
+  min-width: 18px;
+  padding: 0 5px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--text-invert);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: 17px;
+  text-align: center;
+}
+
+.nav__footer {
+  padding: var(--sp-3) var(--sp-4);
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.nav__stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 0;
+}
+
+.nav__stat-value {
+  font-family: var(--font-mono);
+  color: var(--text);
+}
+
+.nav__live {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--sp-2);
+  padding-top: var(--sp-2);
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+}
+
+.nav__live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--status-online);
+  flex: none;
+}
+
+/* ---------- Main ---------- */
+
+.main {
+  grid-area: main;
+  min-height: 0;
+  overflow: hidden;
+  padding: var(--sp-4) var(--sp-5) var(--sp-5);
+}
+
+/* Views own their own scrolling so full-height children (the map) can
+   claim the remaining viewport instead of sitting in a fixed box. */
+.view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  height: 100%;
+  min-height: 0;
+}
+
+.view--scroll {
+  overflow: auto;
+}
+
+.view__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  flex: none;
+}
+
+.view__meta {
+  display: flex;
+  gap: var(--sp-5);
+}
+
+.view__meta-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.view__meta-label {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.view__meta-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  color: var(--text);
+}
+
+/* The console targets control-room displays; below that, shed the
+   secondary identity text before it can collide with the title. */
+@media (max-width: 1080px) {
+  .topbar__org,
+  .topbar__rule {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .topbar__operator-label {
+    display: none;
+  }
+  .view__subtitle {
+    display: none;
+  }
+}
+
+.view__title {
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.view__subtitle {
+  margin-top: 2px;
+  font-size: var(--fs-base);
+  color: var(--text-muted);
+}

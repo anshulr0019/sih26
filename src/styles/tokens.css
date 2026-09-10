@@ -1,0 +1,66 @@
+:root {
+  /* Surfaces */
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --surface-alt: #fafbfc;
+  --surface-sunken: #eceef1;
+
+  /* Lines */
+  --border: #d6d9de;
+  --border-strong: #b9bec6;
+
+  /* Brand */
+  --navy: #1f3a5f;
+  --navy-dark: #16293f;
+  --navy-tint: #e8edf3;
+
+  /* Text */
+  /* Both greys clear 4.5:1 against --bg, the lightest surface they sit
+     on, since they carry 10-11px labels. Ratios: muted 5.85, faint 4.59. */
+  --text: #1a1d21;
+  --text-muted: #56606d;
+  --text-faint: #667080;
+  --text-invert: #ffffff;
+
+  /* Single accent — alerts, severity, active state */
+  --accent: #b3122b;
+  --accent-tint: #fbeef0;
+
+  /* Traffic congestion scale (domain convention, not UI accent).
+     Deliberately warmer/lighter than --accent so the two never read
+     as the same signal. */
+  --traffic-high: #e2513c;
+  --traffic-mid: #dfa029;
+  --traffic-low: #3f8f5e;
+
+  /* Status */
+  --status-online: #2f7d52;
+  --status-offline: #98a0aa;
+
+  /* Type */
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-base: 13px;
+  --fs-md: 14px;
+  --fs-lg: 16px;
+  --fs-xl: 20px;
+
+  /* Geometry */
+  --radius: 2px;
+  --radius-card: 3px;
+
+  /* Spacing */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+
+  /* Layout */
+  --topbar-h: 52px;
+  --nav-w: 208px;
+}

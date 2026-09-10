@@ -1,0 +1,241 @@
+/* ---------- Map frame ---------- */
+
+.map {
+  flex: 1;
+  min-height: 0;
+  background: var(--surface-sunken);
+}
+
+/* Leaflet adds .leaflet-container to this same element, so these must be
+   compound selectors — `.map .leaflet-container` would match nothing. */
+.map.leaflet-container {
+  height: 100%;
+  width: 100%;
+  background: var(--surface-sunken);
+  font-family: var(--font);
+  font-size: var(--fs-base);
+}
+
+/* Flatten Leaflet's default chrome to match the rest of the console.
+   Leaflet ships `font: bold 18px 'Lucida Console'` on the zoom buttons,
+   so family and weight both have to be reset, not just the size. */
+.map .leaflet-control-zoom a {
+  width: 24px;
+  height: 24px;
+  border-radius: 0;
+  border-color: var(--border-strong);
+  color: var(--navy);
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.map .leaflet-bar {
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: none;
+}
+
+.map .leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--text-faint);
+  font-family: var(--font);
+  font-size: 10px;
+}
+
+.map .leaflet-control-attribution a {
+  color: var(--text-muted);
+}
+
+/* ---------- Tile loading state ---------- */
+
+/* Author `display` beats the UA [hidden] rule, so it must be restated. */
+.map-status[hidden] {
+  display: none;
+}
+
+.map-status {
+  position: absolute;
+  inset: 0;
+  /* Above Leaflet's marker panes and controls. */
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-sunken);
+}
+
+.map-status__text {
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+  animation: map-status-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes map-status-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-status__text {
+    animation: none;
+  }
+}
+
+/* ---------- Camera marker ---------- */
+
+.cam-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius);
+  box-sizing: border-box;
+}
+
+.cam-marker svg {
+  width: 13px;
+  height: 13px;
+  display: block;
+}
+
+.cam-marker--online {
+  background: var(--navy);
+  border: 1px solid var(--navy-dark);
+  color: #ffffff;
+}
+
+/* Offline is distinguished by fill AND border style, not colour alone. */
+.cam-marker--offline {
+  background: var(--surface);
+  border: 1px dashed var(--status-offline);
+  color: var(--status-offline);
+}
+
+.cam-marker--seq {
+  position: relative;
+}
+
+/* ---------- Popup ---------- */
+
+.map .leaflet-popup-content-wrapper {
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-card);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  background: var(--surface);
+}
+
+.map .leaflet-popup-content {
+  margin: 0;
+  width: 232px !important;
+  line-height: 1.45;
+}
+
+.map .leaflet-popup-tip {
+  border: 1px solid var(--border-strong);
+  box-shadow: none;
+}
+
+.map .leaflet-popup-close-button {
+  color: var(--text-faint);
+}
+
+.cam-popup__head {
+  padding: var(--sp-2) var(--sp-3);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-alt);
+}
+
+.cam-popup__name {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.cam-popup__corridor {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.cam-popup__rows {
+  padding: var(--sp-2) var(--sp-3);
+}
+
+.cam-popup__row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: 2px 0;
+  font-size: var(--fs-sm);
+}
+
+.cam-popup__label {
+  color: var(--text-muted);
+}
+
+.cam-popup__value {
+  font-family: var(--font-mono);
+  color: var(--text);
+  text-align: right;
+}
+
+.cam-popup__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font);
+}
+
+/* ---------- Legend ---------- */
+
+.map-legend {
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-card);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.map-legend__title {
+  margin-bottom: 5px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.map-legend__row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 2px 0;
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
+
+.map-legend__row .cam-marker {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
+.map-legend__row .cam-marker svg {
+  width: 10px;
+  height: 10px;
+}
+
+.map-legend__swatch {
+  flex: none;
+  width: 16px;
+  height: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 1px;
+}

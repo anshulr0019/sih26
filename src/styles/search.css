@@ -1,0 +1,325 @@
+/* ---------- Search bar ---------- */
+
+.searchbar {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-3);
+  flex: none;
+  padding: var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+
+.searchbar__field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.searchbar__label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.searchbar__input {
+  width: 230px;
+  height: 30px;
+  letter-spacing: 0.06em;
+}
+
+.searchbar .btn {
+  height: 30px;
+}
+
+.searchbar__recent {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-left: auto;
+  padding-left: var(--sp-4);
+  border-left: 1px solid var(--border);
+}
+
+.searchbar__recent-label {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.chip {
+  padding: 3px var(--sp-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface-alt);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: background-color 90ms linear;
+}
+
+.chip:hover {
+  background: var(--surface-sunken);
+  color: var(--text);
+}
+
+/* ---------- Layout ---------- */
+
+.search-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--sp-3);
+  flex: 1;
+  min-height: 0;
+}
+
+.search-layout > .panel {
+  min-height: 0;
+}
+
+/* ---------- Route ---------- */
+
+.route-line {
+  fill: none;
+}
+
+.seq-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  box-sizing: border-box;
+  border: 1px solid var(--navy-dark);
+  border-radius: var(--radius);
+  background: var(--navy);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* Most recent sighting — an active state, hence the accent. */
+.seq-marker--last {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+/* ---------- Vehicle summary ---------- */
+
+.summary {
+  padding: var(--sp-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.summary__head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.summary__plate {
+  font-size: var(--fs-lg);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+
+.summary__flag {
+  padding: 1px 6px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent-tint);
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.summary__vehicle {
+  margin-top: 3px;
+  font-size: var(--fs-base);
+  color: var(--text);
+}
+
+.summary__owner {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.summary__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px var(--sp-3);
+  margin-top: var(--sp-3);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+
+.summary__cell {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  font-size: var(--fs-sm);
+}
+
+.summary__cell-label {
+  color: var(--text-muted);
+}
+
+.summary__cell-value {
+  color: var(--text);
+}
+
+/* ---------- Timeline ---------- */
+
+.timeline {
+  padding: var(--sp-3) var(--sp-3) var(--sp-4);
+}
+
+.timeline__stop {
+  display: flex;
+  gap: var(--sp-3);
+}
+
+.timeline__rail {
+  flex: none;
+  width: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.timeline__seq {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  box-sizing: border-box;
+  border: 1px solid var(--navy-dark);
+  border-radius: var(--radius);
+  background: var(--navy);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  line-height: 1;
+}
+
+.timeline__stop--last .timeline__seq {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.timeline__body {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 2px;
+}
+
+.timeline__head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.timeline__name {
+  font-size: var(--fs-md);
+  font-weight: 500;
+  color: var(--text);
+}
+
+.timeline__flag {
+  padding: 0 5px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.timeline__loc {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.timeline__fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px var(--sp-3);
+  margin-top: var(--sp-2);
+}
+
+.timeline__field {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  font-size: var(--fs-sm);
+}
+
+.timeline__field-label {
+  color: var(--text-muted);
+}
+
+.timeline__field-value {
+  color: var(--text);
+}
+
+/* Segment between two sightings */
+.timeline__gap {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0;
+}
+
+/* 24px wide to match .timeline__rail, with the dashed connector
+   centred so it lines up with the sequence badges above and below. */
+.timeline__gap-rail {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  width: 24px;
+  height: 20px;
+}
+
+.timeline__gap-rail::before {
+  content: '';
+  width: 1px;
+  border-left: 1px dashed var(--border-strong);
+}
+
+.timeline__gap-text {
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+}
+
+/* ---------- Empty states ---------- */
+
+.empty__title {
+  font-size: var(--fs-md);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.empty__detail {
+  margin-top: 3px;
+  font-size: var(--fs-sm);
+  color: var(--text-faint);
+}
+
+@media (max-width: 1180px) {
+  .search-layout {
+    grid-template-columns: 1fr 300px;
+  }
+  .searchbar__recent {
+    display: none;
+  }
+}
