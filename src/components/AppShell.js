@@ -88,7 +88,7 @@ function buildNav(onNavigate) {
 
   const live = el('div', 'nav__live');
   live.append(el('span', 'nav__live-dot'));
-  const liveText = el('span', null, `Live · updated ${istClock()} IST`);
+  const liveText = el('span', null, `Demo · ${istClock()} IST`);
   live.append(liveText);
 
   footer.append(camStat, feedStat, live);
@@ -124,7 +124,7 @@ export function createAppShell({ onNavigate }) {
 
   // Keeps the footer reading as live software rather than a static mock.
   setInterval(() => {
-    liveText.textContent = `Live · updated ${istClock()} IST`;
+    liveText.textContent = `Demo · ${istClock()} IST`;
   }, 1000);
 
   return {

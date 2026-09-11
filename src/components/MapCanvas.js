@@ -90,7 +90,7 @@ export function addLegend(map, rows) {
  * destroy() the view's teardown hook calls on navigation.
  */
 export function createMap(container, options = {}) {
-  const initialBaseLayer = options.baseLayer ?? 'satellite';
+  const initialBaseLayer = options.baseLayer ?? 'street';
   const map = L.map(container, {
     center: options.center ?? DELHI_CENTER,
     zoom: options.zoom ?? DELHI_ZOOM,
@@ -140,8 +140,7 @@ export function createMap(container, options = {}) {
   container.append(status);
 
   let connected = false;
-  let hasTileError = false;
-  const showStatus = setTimeout(() => {
+  let showStatus = setTimeout(() => {
     if (!connected) status.hidden = false;
   }, 2000);
 
@@ -155,7 +154,6 @@ export function createMap(container, options = {}) {
     tiles.off('tileload', onTileLoad);
   };
   const onTileError = () => {
-    hasTileError = true;
     if (!connected) {
       status.querySelector('.map-status__text').textContent =
         activeBaseLayer === 'satellite'
@@ -169,10 +167,10 @@ export function createMap(container, options = {}) {
   function setBaseMap(key) {
     if (!BASE_LAYER_CONFIG[key] || key === activeBaseLayer) return activeBaseLayer;
     connected = false;
-    hasTileError = false;
     status.querySelector('.map-status__text').textContent = 'Connecting to map service…';
     status.hidden = true;
     clearTimeout(showStatus);
+    showStatus = setTimeout(() => { if (!connected) status.hidden = false; }, 2000);
     tiles = mountBaseLayer(key);
     return activeBaseLayer;
   }
@@ -411,7 +409,7 @@ export function addRoute(map, stops, { animate = true } = {}) {
 
   const line = L.polyline(latlngs, {
     className: 'route-line',
-    color: '#1f3a5f',
+    color: '#7aefc4',
     weight: 3,
     opacity: 0.95,
     lineJoin: 'round',

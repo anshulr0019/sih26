@@ -6,6 +6,7 @@ import './styles/map.css';
 import './styles/search.css';
 import './styles/analytics.css';
 import './styles/alerts.css';
+import './styles/command.css';
 
 import { createAppShell, routes } from './components/AppShell.js';
 
