@@ -239,3 +239,401 @@
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 1px;
 }
+
+/* ---------- God's-eye tactical presentation ---------- */
+
+.map--tactical.leaflet-container {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #203f41;
+  background: #071416;
+  isolation: isolate;
+}
+
+.map--tactical.leaflet-container::before,
+.map--tactical.leaflet-container::after {
+  position: absolute;
+  inset: 0;
+  z-index: 650;
+  pointer-events: none;
+  content: '';
+}
+
+.map--tactical.leaflet-container::before {
+  background:
+    linear-gradient(rgba(113, 231, 180, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(113, 231, 180, 0.05) 1px, transparent 1px),
+    radial-gradient(circle at 50% 45%, transparent 0 35%, rgba(4, 13, 15, 0.23) 78%, rgba(3, 8, 10, 0.62) 100%);
+  background-size: 72px 72px, 72px 72px, 100% 100%;
+  mix-blend-mode: screen;
+}
+
+.map--tactical.leaflet-container::after {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(123, 214, 176, 0.035) 49.7%,
+    rgba(123, 214, 176, 0.14) 50%,
+    rgba(123, 214, 176, 0.035) 50.3%,
+    transparent 100%
+  );
+  background-size: 100% 7px;
+  opacity: 0.25;
+  mix-blend-mode: screen;
+}
+
+.map--satellite .leaflet-tile-pane {
+  filter: brightness(0.58) saturate(0.72) contrast(1.2) hue-rotate(8deg);
+}
+
+.map--tactical .leaflet-control-zoom {
+  position: relative;
+  z-index: 720;
+}
+
+.map--tactical .leaflet-control-zoom a {
+  border-color: #36565a;
+  background: rgba(7, 20, 22, 0.9);
+  color: #a8e6c8;
+}
+
+.map--tactical .leaflet-control-zoom a:hover {
+  background: #173438;
+  color: #d2ffe8;
+}
+
+.map--tactical .leaflet-control-attribution {
+  background: rgba(3, 12, 14, 0.72);
+  color: rgba(198, 229, 218, 0.66);
+}
+
+.map--tactical .leaflet-control-attribution a {
+  color: #9fd5bb;
+}
+
+.map--tactical .map-legend {
+  position: relative;
+  z-index: 720;
+  border-color: rgba(126, 208, 178, 0.34);
+  border-radius: 2px;
+  background: rgba(5, 18, 20, 0.88);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.26);
+  color: #d7eee2;
+}
+
+.map--tactical .map-legend__title,
+.map--tactical .map-legend__row {
+  color: #b8d0c6;
+}
+
+.map--tactical .map-legend__row .cam-marker--online {
+  background: #7bd6b0;
+  border-color: #b7f5d2;
+  color: #062022;
+}
+
+.map--tactical .map-legend__row .cam-marker--offline {
+  background: transparent;
+  border-color: #8b9798;
+  color: #aab6b4;
+}
+
+.coverage-sector {
+  stroke-dasharray: 5 7;
+  mix-blend-mode: screen;
+}
+
+.sensor-ring {
+  stroke-dasharray: 2 6;
+  animation: sensor-ring-pulse 3.2s ease-in-out infinite;
+}
+
+.sensor-ring--offline {
+  animation: none;
+}
+
+.tactical-perimeter {
+  stroke-dasharray: 4 8;
+  animation: perimeter-rotate 22s linear infinite;
+}
+
+.tactical-perimeter--inner {
+  stroke-dasharray: 2 10;
+  animation-direction: reverse;
+  animation-duration: 16s;
+}
+
+@keyframes sensor-ring-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes perimeter-rotate {
+  to {
+    stroke-dashoffset: -120;
+  }
+}
+
+.tactical-ui {
+  position: absolute;
+  inset: 0;
+  z-index: 700;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  color: #d4ede1;
+}
+
+.tactical-hud {
+  position: absolute;
+  min-width: 172px;
+  padding: 10px 12px;
+  border: 1px solid rgba(119, 217, 178, 0.34);
+  border-radius: 2px;
+  background: linear-gradient(135deg, rgba(4, 20, 22, 0.92), rgba(5, 27, 28, 0.68));
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+  backdrop-filter: blur(5px);
+}
+
+.tactical-hud--top-left {
+  top: 16px;
+  left: 58px;
+}
+
+.tactical-hud--top-right {
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 16px;
+  min-width: 0;
+}
+
+.tactical-hud--bottom-left {
+  bottom: 28px;
+  left: 16px;
+}
+
+.tactical-hud--bottom-right {
+  right: 16px;
+  bottom: 28px;
+  min-width: 190px;
+}
+
+.tactical-hud__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #83b8a1;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+}
+
+.tactical-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #77e4ad;
+  box-shadow: 0 0 0 3px rgba(119, 228, 173, 0.13), 0 0 12px #77e4ad;
+}
+
+.tactical-hud__title {
+  margin-top: 6px;
+  color: #e4fff0;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+}
+
+.tactical-hud__subline {
+  margin-top: 4px;
+  color: #729689;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+.tactical-hud__metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 54px;
+}
+
+.tactical-hud__metric span,
+.tactical-hud__readout span {
+  color: #709488;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+.tactical-hud__metric strong {
+  color: #a8e8c7;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.tactical-switcher {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.tactical-switcher button,
+.tactical-layer-toggle {
+  border: 1px solid rgba(120, 209, 172, 0.35);
+  border-radius: 2px;
+  background: rgba(8, 28, 29, 0.76);
+  color: #87ad9e;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.tactical-switcher button {
+  min-width: 44px;
+  padding: 5px 7px;
+}
+
+.tactical-switcher button:hover,
+.tactical-switcher button.is-active,
+.tactical-layer-toggle:hover,
+.tactical-layer-toggle.is-active {
+  border-color: #79d9b2;
+  background: rgba(59, 137, 107, 0.34);
+  color: #d2ffe6;
+}
+
+.tactical-hud__coordinates {
+  margin-top: 8px;
+  color: #9bc2b1;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+
+.tactical-layer-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.tactical-layer-toggle__icon {
+  width: 7px;
+  height: 7px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  box-shadow: 0 0 7px currentColor;
+}
+
+.tactical-hud__readout {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 7px;
+  font-size: 10px;
+}
+
+.tactical-hud__readout strong {
+  color: #c8f2da;
+  font-weight: 400;
+}
+
+.tactical-reticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 42px;
+  height: 42px;
+  transform: translate(-50%, -50%);
+  opacity: 0.55;
+}
+
+.tactical-reticle::before,
+.tactical-reticle::after,
+.tactical-reticle span,
+.tactical-reticle i {
+  position: absolute;
+  display: block;
+  background: #9ae5be;
+  content: '';
+}
+
+.tactical-reticle::before,
+.tactical-reticle::after {
+  top: 20px;
+  width: 42px;
+  height: 1px;
+}
+
+.tactical-reticle::after {
+  transform: rotate(90deg);
+}
+
+.tactical-reticle span {
+  top: 14px;
+  left: 14px;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #9ae5be;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.tactical-reticle i {
+  top: 19px;
+  left: 19px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #e4fff0;
+  box-shadow: 0 0 10px #9ae5be;
+}
+
+.tactical-scan-label {
+  position: absolute;
+  right: 18px;
+  bottom: 12px;
+  color: #80ad99;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+
+.tactical-scan-label span {
+  color: #78e3ad;
+  text-shadow: 0 0 8px #78e3ad;
+}
+
+@media (max-width: 760px) {
+  .tactical-hud--top-right {
+    display: none;
+  }
+
+  .tactical-hud--bottom-right {
+    right: 10px;
+    bottom: 26px;
+    min-width: 156px;
+  }
+
+  .tactical-hud--bottom-left {
+    left: 10px;
+    bottom: 26px;
+  }
+
+  .tactical-scan-label {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sensor-ring,
+  .tactical-perimeter {
+    animation: none;
+  }
+}

@@ -5,6 +5,22 @@ import { cameras, cameraById } from '../data/cameras.js';
 export const DELHI_CENTER = [28.6139, 77.209];
 export const DELHI_ZOOM = 12;
 
+const BASE_LAYER_CONFIG = {
+  satellite: {
+    label: 'Satellite',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attribution:
+      'Tiles &copy; Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community',
+    maxZoom: 18,
+  },
+  street: {
+    label: 'Street',
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attribution: '&copy; OpenStreetMap contributors',
+    maxZoom: 18,
+  },
+};
+
 // Phosphor-style camera glyph. evenodd punches out the lens so the whole
 // mark can be tinted with a single currentColor fill.
 const CAMERA_GLYPH = `<svg viewBox="0 0 16 16" fill="currentColor" fill-rule="evenodd" aria-hidden="true"><path d="M5.6 2.4h4.8l.9 1.4h2.6c.6 0 1.1.5 1.1 1.1v7c0 .6-.5 1.1-1.1 1.1H2.1C1.5 13 1 12.5 1 11.9v-7c0-.6.5-1.1 1.1-1.1h2.6l.9-1.4zM8 11a2.6 2.6 0 100-5.2 2.6 2.6 0 000 5.2z"/></svg>`;
@@ -74,6 +90,7 @@ export function addLegend(map, rows) {
  * destroy() the view's teardown hook calls on navigation.
  */
 export function createMap(container, options = {}) {
+  const initialBaseLayer = options.baseLayer ?? 'satellite';
   const map = L.map(container, {
     center: options.center ?? DELHI_CENTER,
     zoom: options.zoom ?? DELHI_ZOOM,
@@ -83,10 +100,37 @@ export function createMap(container, options = {}) {
     inertia: false,
   });
 
-  const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 18,
-    attribution: '&copy; OpenStreetMap contributors',
-  }).addTo(map);
+  let activeBaseLayer = BASE_LAYER_CONFIG[initialBaseLayer]
+    ? initialBaseLayer
+    : 'satellite';
+  let tiles = null;
+
+  function makeBaseLayer(key) {
+    const config = BASE_LAYER_CONFIG[key];
+    return L.tileLayer(config.url, {
+      maxZoom: config.maxZoom,
+      attribution: config.attribution,
+      crossOrigin: true,
+    });
+  }
+
+  function mountBaseLayer(key) {
+    const next = makeBaseLayer(key).addTo(map);
+    const previous = tiles;
+    tiles = next;
+    activeBaseLayer = key;
+    container.dataset.baseLayer = key;
+    container.classList.toggle('map--satellite', key === 'satellite');
+    container.classList.toggle('map--street', key === 'street');
+    if (previous) {
+      previous.off('tileload', onTileLoad);
+      previous.off('tileerror', onTileError);
+      map.removeLayer(previous);
+    }
+    next.on('tileload', onTileLoad);
+    next.on('tileerror', onTileError);
+    return next;
+  }
 
   // Tile-loading state. If the basemap has not appeared shortly after
   // mount, cover the map rather than leaving markers on bare grey.
@@ -96,6 +140,7 @@ export function createMap(container, options = {}) {
   container.append(status);
 
   let connected = false;
+  let hasTileError = false;
   const showStatus = setTimeout(() => {
     if (!connected) status.hidden = false;
   }, 2000);
@@ -109,7 +154,28 @@ export function createMap(container, options = {}) {
     status.hidden = true;
     tiles.off('tileload', onTileLoad);
   };
-  tiles.on('tileload', onTileLoad);
+  const onTileError = () => {
+    hasTileError = true;
+    if (!connected) {
+      status.querySelector('.map-status__text').textContent =
+        activeBaseLayer === 'satellite'
+          ? 'Satellite layer unavailable — switch to street map'
+          : 'Connecting to map service…';
+    }
+  };
+
+  mountBaseLayer(activeBaseLayer);
+
+  function setBaseMap(key) {
+    if (!BASE_LAYER_CONFIG[key] || key === activeBaseLayer) return activeBaseLayer;
+    connected = false;
+    hasTileError = false;
+    status.querySelector('.map-status__text').textContent = 'Connecting to map service…';
+    status.hidden = true;
+    clearTimeout(showStatus);
+    tiles = mountBaseLayer(key);
+    return activeBaseLayer;
+  }
 
   // Leaflet mis-sizes when its container was laid out after construction.
   const ro = new ResizeObserver(() => map.invalidateSize());
@@ -117,9 +183,14 @@ export function createMap(container, options = {}) {
 
   return {
     map,
+    setBaseMap,
+    getBaseMap() {
+      return activeBaseLayer;
+    },
     destroy() {
       clearTimeout(showStatus);
       tiles.off('tileload', onTileLoad);
+      tiles.off('tileerror', onTileError);
       ro.disconnect();
       map.remove();
     },
@@ -151,6 +222,111 @@ export const CAMERA_LEGEND_ROWS = [
   { mark: cameraMarkerHtml('online'), label: 'Camera online' },
   { mark: cameraMarkerHtml('offline'), label: 'Camera offline' },
 ];
+
+function destinationPoint([lat, lng], bearing, distanceMeters) {
+  const latRadians = (lat * Math.PI) / 180;
+  const lngRadians = (lng * Math.PI) / 180;
+  const bearingRadians = (bearing * Math.PI) / 180;
+  const angularDistance = distanceMeters / 6371000;
+  const destinationLat = Math.asin(
+    Math.sin(latRadians) * Math.cos(angularDistance) +
+      Math.cos(latRadians) * Math.sin(angularDistance) * Math.cos(bearingRadians)
+  );
+  const destinationLng =
+    lngRadians +
+    Math.atan2(
+      Math.sin(bearingRadians) * Math.sin(angularDistance) * Math.cos(latRadians),
+      Math.cos(angularDistance) - Math.sin(latRadians) * Math.sin(destinationLat)
+    );
+  return [(destinationLat * 180) / Math.PI, (destinationLng * 180) / Math.PI];
+}
+
+function bearingBetween([fromLat, fromLng], [toLat, toLng]) {
+  const fromLatRadians = (fromLat * Math.PI) / 180;
+  const toLatRadians = (toLat * Math.PI) / 180;
+  const deltaLng = ((toLng - fromLng) * Math.PI) / 180;
+  const y = Math.sin(deltaLng) * Math.cos(toLatRadians);
+  const x =
+    Math.cos(fromLatRadians) * Math.sin(toLatRadians) -
+    Math.sin(fromLatRadians) * Math.cos(toLatRadians) * Math.cos(deltaLng);
+  return ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360;
+}
+
+function sectorPoints(origin, bearing, spread, radiusMeters) {
+  const points = [origin];
+  for (let angle = -spread; angle <= spread; angle += 6) {
+    points.push(destinationPoint(origin, bearing + angle, radiusMeters));
+  }
+  points.push(origin);
+  return points;
+}
+
+/** Adds a restrained sensor perimeter and estimated camera coverage sectors. */
+export function addTacticalOverlays(map, cameraList = cameras) {
+  const group = L.layerGroup().addTo(map);
+  const center = DELHI_CENTER;
+  const perimeter = L.circle(center, {
+    radius: 18500,
+    className: 'tactical-perimeter',
+    color: '#7bd6b0',
+    weight: 1,
+    opacity: 0.65,
+    fill: false,
+    interactive: false,
+  }).addTo(group);
+
+  const innerPerimeter = L.circle(center, {
+    radius: 9500,
+    className: 'tactical-perimeter tactical-perimeter--inner',
+    color: '#7bd6b0',
+    weight: 1,
+    opacity: 0.35,
+    fill: false,
+    interactive: false,
+  }).addTo(group);
+
+  const sectors = [];
+  for (const camera of cameraList) {
+    const origin = [camera.lat, camera.lng];
+    const heading = bearingBetween(origin, center);
+    const color = camera.status === 'online' ? '#70e0b0' : '#a6b0bd';
+    const sector = L.polygon(sectorPoints(origin, heading, 25, 1450), {
+      className: `coverage-sector coverage-sector--${camera.status}`,
+      color,
+      weight: 1,
+      opacity: camera.status === 'online' ? 0.68 : 0.28,
+      fillColor: color,
+      fillOpacity: camera.status === 'online' ? 0.1 : 0.035,
+      interactive: false,
+    }).addTo(group);
+
+    const ring = L.circle(origin, {
+      radius: 190,
+      className: `sensor-ring sensor-ring--${camera.status}`,
+      color,
+      weight: 1,
+      opacity: camera.status === 'online' ? 0.75 : 0.35,
+      fill: false,
+      interactive: false,
+    }).addTo(group);
+
+    sectors.push({ sector, ring });
+  }
+
+  return {
+    group,
+    perimeter,
+    innerPerimeter,
+    sectors,
+    setVisible(visible) {
+      if (visible) group.addTo(map);
+      else map.removeLayer(group);
+    },
+    destroy() {
+      map.removeLayer(group);
+    },
+  };
+}
 
 const ZONE_COLORS = {
   high: '#e2513c',
